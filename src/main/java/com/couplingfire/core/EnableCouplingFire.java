@@ -1,4 +1,4 @@
-package com.coupligfire.core;
+package com.couplingfire.core;
 
 import java.lang.annotation.*;
 
@@ -10,7 +10,6 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Import({EventListenerRegistrar.class})
 public @interface EnableCouplingFire {
 
     String[] basePackages() default {};
