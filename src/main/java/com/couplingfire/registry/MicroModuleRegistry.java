@@ -7,7 +7,9 @@ import com.sun.org.slf4j.internal.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
@@ -57,8 +59,29 @@ public class MicroModuleRegistry implements ImportBeanDefinitionRegistrar, Resou
     }
 
     private void microServiceBeanRegist (Set<String> basePackages, BeanDefinitionRegistry bfRegistry) {
-        ClassPathListenerScanner moduleScanner = moduleScanner(bfRegistry);
-        
+        ClassPathListenerScanner microModuleScanner = moduleScanner(bfRegistry);
+        for (String basePackage : basePackages) {
+            Set<BeanDefinitionHolder> beanDefinitionHolders = microModuleScanner.doScan(basePackage);
+            for (BeanDefinitionHolder beanDefinitionHolder : beanDefinitionHolders) {
+                microModuleRegister(beanDefinitionHolder);
+            }
+            log.info(beanDefinitionHolders.size() + " annotated @MicroModule Components { " +
+                    beanDefinitionHolders +
+                    " } were scanned under package[" + basePackage + "]");
+        }
+    }
+
+    private void microModuleRegister(BeanDefinitionHolder beanDefinitionHolder) {
+        String beanClassName = null;
+        try {
+            GenericBeanDefinition definition = (GenericBeanDefinition) beanDefinitionHolder.getBeanDefinition();
+            beanClassName = definition.getBeanClassName();
+            definition.getConstructorArgumentValues().addGenericArgumentValue(beanClassName);
+            definition.setBeanClass(MicroModuleFactoryBean.class);
+            definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
+        } catch (Exception e) {
+            log.error("Module {} defined failed for {}", beanClassName, e, e);
+        }
     }
 
     protected Set<String> preparedScanPakages(AnnotationAttributes annoAttr) {
