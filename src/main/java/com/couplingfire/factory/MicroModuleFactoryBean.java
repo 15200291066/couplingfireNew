@@ -23,8 +23,9 @@ public class MicroModuleFactoryBean<T> implements FactoryBean<T> {
         if (parentInterface == null) {
             throw new IllegalAccessException("MicroModule parentInterface is null");
         }
-        MicroModuleProxy moduleProxy = new MicroModuleProxy();
-        moduleProxy.setMicroModuleInterface(parentInterface);
+        MicroModuleProxy microModuleProxy = new MicroModuleProxy();
+        microModuleProxy.setMicroModulelInterface(parentInterface);
+
         ModuleProcessor.addModuleProxy(moduleProxy);
         return (T) Proxy.newProxyInstance(parentInterface.getClassLoader(), new Class[] { parentInterface}, moduleProxy);
     }

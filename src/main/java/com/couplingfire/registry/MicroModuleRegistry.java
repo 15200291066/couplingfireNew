@@ -2,9 +2,10 @@ package com.couplingfire.registry;
 
 import com.couplingfire.core.EnableCouplingFire;
 import com.couplingfire.core.MicroModule;
-import com.sun.org.slf4j.internal.Logger;
-import com.sun.org.slf4j.internal.LoggerFactory;
+import com.couplingfire.factory.MicroModuleFactoryBean;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -46,7 +47,7 @@ public class MicroModuleRegistry implements ImportBeanDefinitionRegistrar, Resou
     public void registerBeanDefinitions(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry beanDefinitionRegistry) {
         AnnotationAttributes annotationAttr = AnnotationAttributes.fromMap(annotationMetadata.getAnnotationAttributes(EnableCouplingFire.class.getName()));
         Set<String> basePackages = preparedScanPakages(annotationAttr);
-        microServiceBeanRegist(basePackages, beanDefinitionRegistry);
+        microMosulwBeanRegist(basePackages, beanDefinitionRegistry);
     }
 
     protected ClassPathListenerScanner moduleScanner(BeanDefinitionRegistry registry) {
@@ -58,16 +59,16 @@ public class MicroModuleRegistry implements ImportBeanDefinitionRegistrar, Resou
         return classPathModuleScanner;
     }
 
-    private void microServiceBeanRegist (Set<String> basePackages, BeanDefinitionRegistry bfRegistry) {
+    private void microMosulwBeanRegist (Set<String> basePackages, BeanDefinitionRegistry bfRegistry) {
         ClassPathListenerScanner microModuleScanner = moduleScanner(bfRegistry);
         for (String basePackage : basePackages) {
             Set<BeanDefinitionHolder> beanDefinitionHolders = microModuleScanner.doScan(basePackage);
             for (BeanDefinitionHolder beanDefinitionHolder : beanDefinitionHolders) {
                 microModuleRegister(beanDefinitionHolder);
             }
-            log.info(beanDefinitionHolders.size() + " annotated @MicroModule Components { " +
-                    beanDefinitionHolders +
-                    " } were scanned under package[" + basePackage + "]");
+
+            log.info(beanDefinitionHolders.size() + " MicroModule Components { " +
+                    beanDefinitionHolders + " } found by package[" + basePackage + "]");
         }
     }
 
