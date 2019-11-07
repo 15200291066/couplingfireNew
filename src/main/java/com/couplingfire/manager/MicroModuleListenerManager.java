@@ -4,6 +4,10 @@ import com.couplingfire.factory.MicroModuleProxy;
 import com.couplingfire.listener.MicroModuleListener;
 import com.couplingfire.listener.MicroModuleListenersDTO;
 import com.couplingfire.metaData.MicroModuleMetaData;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +18,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Date 2019/11/5 19:06
  * @Author lee
  **/
-public class MicroModuleListenerManager {
+@Component()
+public class MicroModuleListenerManager implements ApplicationContextAware {
+
+    private ApplicationContext context;
 
     private final static Map<String, List<MicroModuleListener>> microModuleListenersMap = new ConcurrentHashMap<>();
 
@@ -41,7 +48,22 @@ public class MicroModuleListenerManager {
         }
     }
 
-    public static void addMicroModuleListener(String microModuleName, MicroModuleListener listener) {
+    public void registMicroModuleListener(Class<? extends MicroModuleListener> listenerClz) {
+        MicroModuleMetaData metaData = microModuleListenerMetaData.get(listenerClz);
+        if (metaData == null) {
+            metaData = MicroModuleMetaData.buildMetaData(listenerClz);
+            microModuleListenerMetaData.put(listenerClz, metaData);
+        }
+        String microModuleName = metaData.getMicroModuleName();
+        List<MicroModuleListener> listenerList = microModuleListenersMap.get(microModuleName);
+        if (listenerList == null) {
+            listenerList = new ArrayList();
+        }
+        listenerList.add(context.getBean(listenerClz));
+        microModuleListenersMap.put(microModuleName, listenerList);
+    }
+
+    public void addMicroModuleListener(String microModuleName, MicroModuleListener listener) {
         List<MicroModuleListener> listeners = microModuleListenersMap.get(microModuleName);
         if (listeners == null) {
             listeners = new ArrayList();
@@ -59,4 +81,8 @@ public class MicroModuleListenerManager {
             microModuleListenerClassList.add(proxy.getMicroModulelInterface());
     }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.context = applicationContext;
+    }
 }
