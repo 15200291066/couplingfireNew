@@ -2,7 +2,9 @@ package com.couplingfire.registry;
 
 import com.couplingfire.core.EnableCouplingFire;
 import com.couplingfire.core.MicroModule;
+import com.couplingfire.core.MicroModuleListener;
 import com.couplingfire.factory.MicroModuleFactoryBean;
+import com.couplingfire.manager.MicroModuleListenerManager;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +49,12 @@ public class MicroModuleRegistry implements ImportBeanDefinitionRegistrar, Resou
     public void registerBeanDefinitions(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry beanDefinitionRegistry) {
         AnnotationAttributes annotationAttr = AnnotationAttributes.fromMap(annotationMetadata.getAnnotationAttributes(EnableCouplingFire.class.getName()));
         Set<String> basePackages = preparedScanPakages(annotationAttr);
-        microMosulwBeanRegist(basePackages, beanDefinitionRegistry);
+        try {
+            microModuleBeanDefRegist(basePackages, beanDefinitionRegistry);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        microModuleListenerBeanDefRegist(basePackages, beanDefinitionRegistry);
     }
 
     protected ClassPathListenerScanner moduleScanner(BeanDefinitionRegistry registry) {
@@ -59,7 +66,32 @@ public class MicroModuleRegistry implements ImportBeanDefinitionRegistrar, Resou
         return classPathModuleScanner;
     }
 
-    private void microMosulwBeanRegist (Set<String> basePackages, BeanDefinitionRegistry bfRegistry) {
+    private void microModuleBeanDefRegist(Set<String> basePackages, BeanDefinitionRegistry bfRegistry) throws ClassNotFoundException {
+        ClassPathListenerScanner microModuleListenerScanner = microModuleListenrScanner(bfRegistry);
+        for (String basePackage : basePackages) {
+            Set<BeanDefinitionHolder> beanDefinitionHolders = microModuleListenerScanner.doScan(basePackage);
+            for (BeanDefinitionHolder beanDefinitionHolder : beanDefinitionHolders) {
+                Class<? extends com.couplingfire.listener.MicroModuleListener> clz =
+                        (Class<? extends com.couplingfire.listener.MicroModuleListener>) Class.forName(beanDefinitionHolder.getBeanDefinition().getBeanClassName(), true, classLoader);
+                MicroModuleListenerManager.addMicroModuleListenerClass(clz);
+            }
+            log.info(beanDefinitionHolders.size() + " MicroModuleListener { " +
+                    beanDefinitionHolders +
+                    " } found by package[" + basePackages + "]");
+        }
+    }
+
+    protected ClassPathListenerScanner microModuleListenrScanner(BeanDefinitionRegistry bfRegistry) {
+        ClassPathListenerScanner classPathModuleListenerScanner
+                = new ClassPathListenerScanner(bfRegistry, environment, resourceLoader);
+        classPathModuleListenerScanner.addIncludeFilter(new AnnotationTypeFilter(MicroModuleListener.class));
+        classPathModuleListenerScanner.addExcludeFilter(new AnnotationTypeFilter(Component.class));
+        classPathModuleListenerScanner.setMatchInterface(false);
+        return classPathModuleListenerScanner;
+    }
+
+
+    private void microModuleListenerBeanDefRegist (Set<String> basePackages, BeanDefinitionRegistry bfRegistry) {
         ClassPathListenerScanner microModuleScanner = moduleScanner(bfRegistry);
         for (String basePackage : basePackages) {
             Set<BeanDefinitionHolder> beanDefinitionHolders = microModuleScanner.doScan(basePackage);

@@ -1,5 +1,8 @@
 package com.couplingfire.core;
 
+import com.couplingfire.registry.MicroModuleRegistry;
+import org.springframework.context.annotation.Import;
+
 import java.lang.annotation.*;
 
 /**
@@ -10,6 +13,7 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@Import({MicroModuleRegistry.class})
 public @interface EnableCouplingFire {
 
     String[] basePackages() default {};
