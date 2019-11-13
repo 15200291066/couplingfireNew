@@ -1,6 +1,6 @@
 package com.couplingfire.factory;
 
-import com.couplingfire.manager.MicroModuleListenerManager;
+import com.couplingfire.manager.MicroModuleListenerContext;
 import org.springframework.beans.factory.FactoryBean;
 
 import java.lang.reflect.Proxy;
@@ -26,7 +26,7 @@ public class MicroModuleFactoryBean<T> implements FactoryBean<T> {
         }
         MicroModuleProxy microModuleProxy = new MicroModuleProxy();
         microModuleProxy.setMicroModulelInterface(parentInterface);
-        MicroModuleListenerManager.addMicroModuleProxy(microModuleProxy);
+        MicroModuleListenerContext.addMicroModuleProxy(microModuleProxy);
         return (T) Proxy.newProxyInstance(parentInterface.getClassLoader(), new Class[] { parentInterface}, microModuleProxy);
     }
 

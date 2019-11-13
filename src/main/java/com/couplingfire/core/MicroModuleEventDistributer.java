@@ -2,7 +2,7 @@ package com.couplingfire.core;
 
 import com.couplingfire.listener.MicroModuleListener;
 import com.couplingfire.listener.MicroModuleListenersDTO;
-import com.couplingfire.manager.MicroModuleListenerManager;
+import com.couplingfire.manager.MicroModuleListenerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 public class MicroModuleEventDistributer {
     private static Logger log = LoggerFactory.getLogger(MicroModuleEventDistributer.class);
     public static  <T extends MicroModuleListener> void fireEvent(String microModule, Class<T> listenerClass, Consumer<T> consumer) {
-        MicroModuleListenersDTO<T> microModuleListenersDTO = MicroModuleListenerManager.get(microModule, listenerClass);
+        MicroModuleListenersDTO<T> microModuleListenersDTO = MicroModuleListenerContext.get(microModule, listenerClass);
         if (microModuleListenersDTO != null) {
             List<T> listeners = microModuleListenersDTO.getModuleListeners();
             int listenerSize = listeners.size();

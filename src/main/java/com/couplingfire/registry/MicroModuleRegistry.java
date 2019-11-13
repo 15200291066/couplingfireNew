@@ -4,7 +4,7 @@ import com.couplingfire.core.EnableCouplingFire;
 import com.couplingfire.core.MicroModule;
 import com.couplingfire.core.MicroModuleListener;
 import com.couplingfire.factory.MicroModuleFactoryBean;
-import com.couplingfire.manager.MicroModuleListenerManager;
+import com.couplingfire.manager.MicroModuleListenerContext;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +73,7 @@ public class MicroModuleRegistry implements ImportBeanDefinitionRegistrar, Resou
             for (BeanDefinitionHolder beanDefinitionHolder : beanDefinitionHolders) {
                 Class<? extends com.couplingfire.listener.MicroModuleListener> clz =
                         (Class<? extends com.couplingfire.listener.MicroModuleListener>) Class.forName(beanDefinitionHolder.getBeanDefinition().getBeanClassName(), true, classLoader);
-                MicroModuleListenerManager.addMicroModuleListenerClass(clz);
+                MicroModuleListenerContext.addMicroModuleListenerClass(clz);
             }
             log.info(beanDefinitionHolders.size() + " MicroModuleListener { " +
                     beanDefinitionHolders +

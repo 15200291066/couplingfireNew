@@ -1,9 +1,11 @@
 package com.couplingfire.manager;
 
+import com.couplingfire.event.MicroModuleEvent;
 import com.couplingfire.factory.MicroModuleProxy;
 import com.couplingfire.listener.MicroModuleListener;
 import com.couplingfire.listener.MicroModuleListenersDTO;
 import com.couplingfire.metaData.MicroModuleMetaData;
+import com.couplingfire.publisher.MicroModuleEventPublisher;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -19,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Author lee
  **/
 @Component()
-public class MicroModuleListenerManager implements ApplicationContextAware {
+public class MicroModuleListenerContext implements ApplicationContextAware, MicroModuleEventPublisher {
 
     private ApplicationContext context;
 
@@ -84,5 +86,10 @@ public class MicroModuleListenerManager implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.context = applicationContext;
+    }
+
+    @Override
+    public void publishEvent(MicroModuleEvent e) {
+
     }
 }

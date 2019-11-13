@@ -1,7 +1,7 @@
 package com.couplingfire.registry;
 
 import com.couplingfire.core.MicroModuleListener;
-import com.couplingfire.manager.MicroModuleListenerManager;
+import com.couplingfire.manager.MicroModuleListenerContext;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ import java.lang.annotation.Annotation;
 public class MicroModuleIOC implements BeanPostProcessor {
 
     @Resource
-    private MicroModuleListenerManager listenerManager;
+    private MicroModuleListenerContext listenerManager;
 
     @Override
     public Object postProcessBeforeInitialization(Object o, String s) throws BeansException {
@@ -29,7 +29,7 @@ public class MicroModuleIOC implements BeanPostProcessor {
         Class beanClz = o.getClass();
         Annotation anno = beanClz.getAnnotation(MicroModuleListener.class);
         if (anno != null) {
-            MicroModuleListenerManager.addMicroModuleListenerClass(beanClz);
+            MicroModuleListenerContext.addMicroModuleListenerClass(beanClz);
             listenerManager.registMicroModuleListener(beanClz);
         }
         return o;
