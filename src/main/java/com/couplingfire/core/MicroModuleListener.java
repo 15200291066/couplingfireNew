@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MicroModuleListener {
     /**
-     * {@link #name()}
+     *
      * @return
      */
     String value() default "";
@@ -16,5 +16,5 @@ public @interface MicroModuleListener {
      * 监听微服务的名称
      * @return
      */
-    String name() default "";
+    String microModuleName() default "";
 }

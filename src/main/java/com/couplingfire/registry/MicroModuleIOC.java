@@ -19,6 +19,9 @@ public class MicroModuleIOC implements BeanPostProcessor {
     @Resource
     private MicroModuleListenerContext listenerManager;
 
+    @Resource
+    private DefaultMicroModuleListenerTable listenerTable;
+
     @Override
     public Object postProcessBeforeInitialization(Object o, String s) throws BeansException {
         return o;
@@ -31,6 +34,7 @@ public class MicroModuleIOC implements BeanPostProcessor {
         if (anno != null) {
             MicroModuleListenerContext.addMicroModuleListenerClass(beanClz);
             listenerManager.registMicroModuleListener(beanClz);
+            listenerTable.registMicroModuleListener(beanClz);
         }
         return o;
     }

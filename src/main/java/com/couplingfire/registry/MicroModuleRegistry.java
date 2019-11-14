@@ -67,7 +67,7 @@ public class MicroModuleRegistry implements ImportBeanDefinitionRegistrar, Resou
     }
 
     private void microModuleBeanDefRegist(Set<String> basePackages, BeanDefinitionRegistry bfRegistry) throws ClassNotFoundException {
-        ClassPathListenerScanner microModuleListenerScanner = microModuleListenrScanner(bfRegistry);
+        ClassPathListenerScanner microModuleListenerScanner = moduleScanner(bfRegistry);
         for (String basePackage : basePackages) {
             Set<BeanDefinitionHolder> beanDefinitionHolders = microModuleListenerScanner.doScan(basePackage);
             for (BeanDefinitionHolder beanDefinitionHolder : beanDefinitionHolders) {
@@ -92,19 +92,22 @@ public class MicroModuleRegistry implements ImportBeanDefinitionRegistrar, Resou
 
 
     private void microModuleListenerBeanDefRegist (Set<String> basePackages, BeanDefinitionRegistry bfRegistry) {
-        ClassPathListenerScanner microModuleScanner = moduleScanner(bfRegistry);
+        ClassPathListenerScanner microModuleScanner = microModuleListenrScanner(bfRegistry);
         for (String basePackage : basePackages) {
             Set<BeanDefinitionHolder> beanDefinitionHolders = microModuleScanner.doScan(basePackage);
             for (BeanDefinitionHolder beanDefinitionHolder : beanDefinitionHolders) {
-                microModuleRegister(beanDefinitionHolder);
+                doMicroModuleListenerRegist(beanDefinitionHolder);
             }
-
             log.info(beanDefinitionHolders.size() + " MicroModule Components { " +
                     beanDefinitionHolders + " } found by package[" + basePackage + "]");
         }
     }
 
-    private void microModuleRegister(BeanDefinitionHolder beanDefinitionHolder) {
+    /**
+     * 将监听者的beanDefinition注册到Bean工厂
+     * @param beanDefinitionHolder
+     */
+    private void doMicroModuleListenerRegist(BeanDefinitionHolder beanDefinitionHolder) {
         String beanClassName = null;
         try {
             GenericBeanDefinition definition = (GenericBeanDefinition) beanDefinitionHolder.getBeanDefinition();
