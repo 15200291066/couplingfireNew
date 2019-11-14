@@ -7,6 +7,16 @@ public abstract class MicroModuleEvent extends Event{
 
     protected String eventDataMsg; //事件携带的数据 JSON
 
+    /**
+     * Constructs a prototypical Event.
+     *
+     * @param source The object on which the Event initially occurred.
+     * @throws IllegalArgumentException if source is null.
+     */
+    public MicroModuleEvent(Object source) {
+        super(source);
+    }
+
     public final long getTimestamp() {
         return this.timestamp;
     }
