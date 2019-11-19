@@ -62,4 +62,8 @@ public class DefaultMicroModuleListenerTable implements MicroModuleListenerTable
         listeners.add(listener);
         listenerTable.put(microModule,listeners);
     }
+
+    public Set<MicroModuleListener> getListenerByModule(String microModuleName) {
+        return listenerTable.get(microModuleName);
+    }
 }

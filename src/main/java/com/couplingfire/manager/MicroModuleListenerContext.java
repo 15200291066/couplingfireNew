@@ -1,29 +1,35 @@
 package com.couplingfire.manager;
 
+import com.couplingfire.core.MicroModule;
 import com.couplingfire.event.MicroModuleEvent;
 import com.couplingfire.factory.MicroModuleProxy;
 import com.couplingfire.listener.MicroModuleListener;
 import com.couplingfire.listener.MicroModuleListenersDTO;
 import com.couplingfire.metaData.MicroModuleMetaData;
 import com.couplingfire.publisher.MicroModuleEventPublisher;
+import com.couplingfire.registry.DefaultMicroModuleListenerTable;
+import com.couplingfire.registry.MicroModuleListenerTable;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 /**
  * @Date 2019/11/5 19:06
  * @Author lee
  **/
-@Component()
+@Component
 public class MicroModuleListenerContext implements ApplicationContextAware, MicroModuleEventPublisher {
 
     private ApplicationContext context;
+
+    @Autowired
+    private DefaultMicroModuleListenerTable defaultListenerTable;
 
     private final static Map<String, List<MicroModuleListener>> microModuleListenersMap = new ConcurrentHashMap<>();
 
@@ -91,5 +97,15 @@ public class MicroModuleListenerContext implements ApplicationContextAware, Micr
     @Override
     public void publishEvent(MicroModuleEvent e) {
 
+    }
+
+    @Override
+    public void publishEvent(String microModuleName, MicroModuleEvent e) {
+        Set<MicroModuleListener> listeners = defaultListenerTable.getListenerByModule(microModuleName);
+        if (listeners != null) {
+            for (MicroModuleListener l : listeners) {
+                l.onEvent(e);
+            }
+        }
     }
 }
