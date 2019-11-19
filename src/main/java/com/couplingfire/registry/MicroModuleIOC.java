@@ -30,10 +30,10 @@ public class MicroModuleIOC implements BeanPostProcessor {
     @Override
     public Object postProcessAfterInitialization(Object o, String s) throws BeansException {
         Class beanClz = o.getClass();
-        Annotation anno = beanClz.getAnnotation(MicroModuleListener.class);
+        MicroModuleListener anno = (MicroModuleListener) beanClz.getAnnotation(MicroModuleListener.class);
         if (anno != null) {
-            MicroModuleListenerContext.addMicroModuleListenerClass(beanClz);
-            listenerManager.registMicroModuleListener(beanClz);
+            //MicroModuleListenerContext.addMicroModuleListenerClass(beanClz);
+            //listenerManager.registMicroModuleListener(beanClz);
             listenerTable.registMicroModuleListener(beanClz);
         }
         return o;

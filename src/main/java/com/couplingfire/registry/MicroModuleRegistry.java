@@ -85,7 +85,7 @@ public class MicroModuleRegistry implements ImportBeanDefinitionRegistrar, Resou
         ClassPathListenerScanner classPathModuleListenerScanner
                 = new ClassPathListenerScanner(bfRegistry, environment, resourceLoader);
         classPathModuleListenerScanner.addIncludeFilter(new AnnotationTypeFilter(MicroModuleListener.class));
-        classPathModuleListenerScanner.addExcludeFilter(new AnnotationTypeFilter(Component.class));
+        //classPathModuleListenerScanner.addExcludeFilter(new AnnotationTypeFilter(Component.class));
         classPathModuleListenerScanner.setMatchInterface(false);
         return classPathModuleListenerScanner;
     }
@@ -98,7 +98,7 @@ public class MicroModuleRegistry implements ImportBeanDefinitionRegistrar, Resou
             for (BeanDefinitionHolder beanDefinitionHolder : beanDefinitionHolders) {
                 doMicroModuleListenerRegist(beanDefinitionHolder);
             }
-            log.info(beanDefinitionHolders.size() + " MicroModule Components { " +
+            log.info(beanDefinitionHolders.size() + " MicroModuleListener Components { " +
                     beanDefinitionHolders + " } found by package[" + basePackage + "]");
         }
     }

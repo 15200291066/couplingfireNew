@@ -8,4 +8,6 @@ public interface MicroModuleListenerTable {
     void registMicroModuleListener(String microModule, MicroModuleListener listener);
 
     void registMicroModuleListener(Class<? extends MicroModuleListener> microModuleListenerClz);
+
+    void registMicroModuleListener(String microModule, Class<? extends MicroModuleListener> clz);
 }

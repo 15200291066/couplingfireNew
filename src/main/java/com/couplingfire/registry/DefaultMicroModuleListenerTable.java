@@ -30,22 +30,36 @@ public class DefaultMicroModuleListenerTable implements MicroModuleListenerTable
 
     @Override
     public void registMicroModuleListener(String microModule, MicroModuleListener listener) {
+        doRegistListener(microModule, listener);
+    }
+
+    @Override
+    public void registMicroModuleListener(Class<? extends MicroModuleListener> microModuleListenerClz) {
+        com.couplingfire.core.MicroModuleListener anno =  microModuleListenerClz.getAnnotation(com.couplingfire.core.MicroModuleListener.class);
+        if (anno != null) {
+            String microModule = anno.microModuleName();
+            MicroModuleListener listener = applicationContext.getBean(microModuleListenerClz);
+            doRegistListener(microModule, listener);
+        }
+    }
+
+    @Override
+    public void registMicroModuleListener(String microModule, Class<? extends MicroModuleListener> clz) {
+        MicroModuleListener microModuleListener = applicationContext.getBean(clz);
+        doRegistListener(microModule, microModuleListener);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    private void doRegistListener(String microModule, MicroModuleListener listener) {
         Set<MicroModuleListener> listeners = listenerTable.get(microModule);
         if (listeners == null) {
             listeners = new HashSet();
         }
         listeners.add(listener);
         listenerTable.put(microModule,listeners);
-    }
-
-    @Override
-    public void registMicroModuleListener(Class<? extends MicroModuleListener> microModuleListenerClz) {
-        Annotation anno = microModuleListenerClz.getAnnotation(com.couplingfire.core.MicroModuleListener.class);
-
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
     }
 }

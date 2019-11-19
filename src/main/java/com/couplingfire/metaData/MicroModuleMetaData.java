@@ -10,7 +10,7 @@ public class MicroModuleMetaData extends AbstractMicroModuleListenerMetaData<Mic
 
     @Override
     public String getMicroModuleName() {
-        return listener.name();
+        return listener.microModuleName();
     }
 
     public static MicroModuleMetaData buildMetaData(Class microModuleListenerClz) {
