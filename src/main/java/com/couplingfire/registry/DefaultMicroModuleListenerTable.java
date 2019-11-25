@@ -55,12 +55,8 @@ public class DefaultMicroModuleListenerTable implements MicroModuleListenerTable
     }
 
     private void doRegistListener(String microModule, MicroModuleListener listener) {
-        Set<MicroModuleListener> listeners = listenerTable.get(microModule);
-        if (listeners == null) {
-            listeners = new HashSet();
-        }
+        Set<MicroModuleListener> listeners = listenerTable.computeIfAbsent(microModule,s -> new HashSet<>());
         listeners.add(listener);
-        listenerTable.put(microModule,listeners);
     }
 
     public Set<MicroModuleListener> getListenerByModule(String microModuleName) {
