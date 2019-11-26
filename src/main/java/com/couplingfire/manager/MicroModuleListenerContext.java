@@ -3,6 +3,7 @@ package com.couplingfire.manager;
 import com.couplingfire.core.MicroModule;
 import com.couplingfire.event.MicroModuleEvent;
 import com.couplingfire.factory.MicroModuleProxy;
+import com.couplingfire.listener.GenericMicroModuleListener;
 import com.couplingfire.listener.MicroModuleListener;
 import com.couplingfire.listener.MicroModuleListenersDTO;
 import com.couplingfire.metaData.MicroModuleMetaData;
@@ -104,7 +105,9 @@ public class MicroModuleListenerContext implements ApplicationContextAware, Micr
         Set<MicroModuleListener> listeners = defaultListenerTable.getListenerByModule(microModuleName);
         if (listeners != null) {
             for (MicroModuleListener l : listeners) {
-                l.onEvent(e);
+                if (((GenericMicroModuleListener)l).supportsEventType(e.getClass())) {
+                    l.onEvent(e);
+                }
             }
         }
     }

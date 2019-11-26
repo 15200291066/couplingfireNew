@@ -1,5 +1,7 @@
 package com.couplingfire.registry;
 
+import com.couplingfire.listener.GenericMicroModuleListener;
+import com.couplingfire.listener.GenericMicroModuleListenerAdapter;
 import com.couplingfire.listener.MicroModuleListener;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -56,7 +58,7 @@ public class DefaultMicroModuleListenerTable implements MicroModuleListenerTable
 
     private void doRegistListener(String microModule, MicroModuleListener listener) {
         Set<MicroModuleListener> listeners = listenerTable.computeIfAbsent(microModule,s -> new HashSet<>());
-        listeners.add(listener);
+        listeners.add(listener instanceof GenericMicroModuleListener ? (GenericMicroModuleListener) listener : new GenericMicroModuleListenerAdapter(listener));
     }
 
     public Set<MicroModuleListener> getListenerByModule(String microModuleName) {
