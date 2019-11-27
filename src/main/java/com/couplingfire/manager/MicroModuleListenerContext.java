@@ -1,6 +1,5 @@
 package com.couplingfire.manager;
 
-import com.couplingfire.core.MicroModule;
 import com.couplingfire.event.MicroModuleEvent;
 import com.couplingfire.factory.MicroModuleProxy;
 import com.couplingfire.listener.GenericMicroModuleListener;
@@ -9,16 +8,17 @@ import com.couplingfire.listener.MicroModuleListenersDTO;
 import com.couplingfire.metaData.MicroModuleMetaData;
 import com.couplingfire.publisher.MicroModuleEventPublisher;
 import com.couplingfire.registry.DefaultMicroModuleListenerTable;
-import com.couplingfire.registry.MicroModuleListenerTable;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.event.AbstractApplicationEventMulticaster;
+import org.springframework.core.ResolvableType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 
 /**
  * @Date 2019/11/5 19:06
@@ -31,6 +31,8 @@ public class MicroModuleListenerContext implements ApplicationContextAware, Micr
 
     @Autowired
     private DefaultMicroModuleListenerTable defaultListenerTable;
+
+    private Map<ListenerCacheKey,Set<MicroModuleListener>> listenerCache = new ConcurrentHashMap<>(64);
 
     private final static Map<String, List<MicroModuleListener>> microModuleListenersMap = new ConcurrentHashMap<>();
 
@@ -102,13 +104,60 @@ public class MicroModuleListenerContext implements ApplicationContextAware, Micr
 
     @Override
     public void publishEvent(String microModuleName, MicroModuleEvent e) {
-        Set<MicroModuleListener> listeners = defaultListenerTable.getListenerByModule(microModuleName);
+        ListenerCacheKey cacheKey = new ListenerCacheKey(ResolvableType.forClass(e.getClass()), e.getSource().getClass(), microModuleName);
+        Set<MicroModuleListener> listeners = listenerCache.get(cacheKey);
+        //TODO
+//        Set<MicroModuleListener> listeners = defaultListenerTable.getListenerByModule(microModuleName);
         if (listeners != null) {
             for (MicroModuleListener l : listeners) {
                 if (((GenericMicroModuleListener)l).supportsEventType(e.getClass())) {
                     l.onEvent(e);
                 }
             }
+        }
+    }
+
+    private static final class ListenerCacheKey implements Comparable<ListenerCacheKey>{
+        private final String microModuleName;
+        private final ResolvableType eventType;
+        private final Class<?> sourceType;
+
+        public ListenerCacheKey(ResolvableType eventType, Class<?> sourceType, String microModuleName) {
+            this.eventType = eventType;
+            this.sourceType = sourceType;
+            this.microModuleName = microModuleName;
+        }
+
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            } else {
+                ListenerCacheKey otherKey = (ListenerCacheKey)other;
+                return ObjectUtils.nullSafeEquals(this.eventType, otherKey.eventType) && ObjectUtils.nullSafeEquals(this.microModuleName, otherKey.microModuleName);
+            }
+        }
+
+        public int hashCode() {
+            return ObjectUtils.nullSafeHashCode(microModuleName) * 30 +
+                    ObjectUtils.nullSafeHashCode(this.eventType) * 29 +
+                     ObjectUtils.nullSafeHashCode(this.sourceType);
+        }
+
+        public String toString() {
+            return "ListenerCacheKey [eventType = " + this.eventType + ", microModuleName = " + this.microModuleName + " sourceType = " + this.sourceType.getName() + "]";
+        }
+
+        public int compareTo(ListenerCacheKey other) {
+            int result = 0;
+            if (this.eventType != null) {
+                result = this.eventType.toString().compareTo(other.eventType.toString());
+            }
+
+            if (result == 0 && this.microModuleName != null) {
+                result = this.microModuleName.compareTo(other.microModuleName);
+            }
+
+            return result;
         }
     }
 }

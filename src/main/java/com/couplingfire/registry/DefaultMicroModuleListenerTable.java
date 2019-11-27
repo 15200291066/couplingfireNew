@@ -23,6 +23,7 @@ public class DefaultMicroModuleListenerTable implements MicroModuleListenerTable
 
     private Map<String, Set<MicroModuleListener>> listenerTable = new ConcurrentHashMap<>(64);
 
+
     private List<Class<? extends MicroModuleListener>> listenerClassHolder = new ArrayList<>();
 
     @Override

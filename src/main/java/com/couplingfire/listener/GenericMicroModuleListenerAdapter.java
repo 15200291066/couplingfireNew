@@ -27,7 +27,7 @@ public class GenericMicroModuleListenerAdapter implements GenericMicroModuleList
 
     private static ResolvableType resolveDeclaredEventType(MicroModuleListener<MicroModuleEvent> listener) {
         ResolvableType declaredEventType = resolveDeclaredEventType(listener.getClass());
-        if (declaredEventType == null || declaredEventType.isAssignableFrom(ApplicationEvent.class)) {
+        if (declaredEventType == null || declaredEventType.isAssignableFrom(MicroModuleEvent.class)) {
             Class<?> targetClass = AopUtils.getTargetClass(listener);
             if (targetClass != listener.getClass()) {
                 declaredEventType = resolveDeclaredEventType(targetClass);
