@@ -1,7 +1,6 @@
 package com.couplingfire.factory;
 
 import com.couplingfire.metaData.MicroModuleMetaData;
-import org.aopalliance.intercept.Invocation;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

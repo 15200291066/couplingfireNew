@@ -2,8 +2,6 @@ package com.couplingfire.listener;
 
 import com.couplingfire.event.MicroModuleEvent;
 import org.springframework.aop.support.AopUtils;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationListener;
 import org.springframework.core.ResolvableType;
 import org.springframework.util.Assert;
 import org.springframework.util.ConcurrentReferenceHashMap;
@@ -37,7 +35,7 @@ public class GenericMicroModuleListenerAdapter implements GenericMicroModuleList
     }
 
     static ResolvableType resolveDeclaredEventType(Class<?> listenerType) {
-        ResolvableType eventType = (ResolvableType)eventTypeCache.get(listenerType);
+        ResolvableType eventType = eventTypeCache.get(listenerType);
         if (eventType == null) {
             eventType = ResolvableType.forClass(listenerType).as(MicroModuleListener.class).getGeneric(new int[0]);
             eventTypeCache.put(listenerType, eventType);

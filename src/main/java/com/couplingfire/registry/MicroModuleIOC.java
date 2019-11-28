@@ -7,7 +7,6 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.lang.annotation.Annotation;
 
 /**
  * @Date 2019/11/6 18:57
