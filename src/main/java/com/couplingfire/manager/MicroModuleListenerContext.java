@@ -19,6 +19,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 /**
  * @Date 2019/11/5 19:06
@@ -106,9 +107,19 @@ public class MicroModuleListenerContext implements ApplicationContextAware, Micr
     public void publishEvent(String microModuleName, MicroModuleEvent e) {
         ListenerCacheKey cacheKey = new ListenerCacheKey(ResolvableType.forClass(e.getClass()), e.getSource().getClass(), microModuleName);
         Set<MicroModuleListener> listeners = listenerCache.get(cacheKey);
-        //TODO
-//        Set<MicroModuleListener> listeners = defaultListenerTable.getListenerByModule(microModuleName);
-        if (listeners != null) {
+        if (listeners == null) {
+            listeners = defaultListenerTable.getListenerByModule(microModuleName);
+            if (listeners != null ) {
+                Set<MicroModuleListener> listenerCacheSet = new HashSet<>();
+                for (MicroModuleListener l : listeners) {
+                    if (((GenericMicroModuleListener)l).supportsEventType(e.getClass())) {
+                        listenerCacheSet.add(l);
+                        l.onEvent(e);
+                    }
+                }
+                listenerCache.put(cacheKey,listenerCacheSet);
+            }
+        } else {
             for (MicroModuleListener l : listeners) {
                 if (((GenericMicroModuleListener)l).supportsEventType(e.getClass())) {
                     l.onEvent(e);
