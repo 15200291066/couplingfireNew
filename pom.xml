@@ -60,6 +60,18 @@
             <artifactId>spring-context</artifactId>
             <version>4.3.7.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-core</artifactId>
+            <version>10.4.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.github.openfeign/feign-jackson -->
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-jackson</artifactId>
+            <version>10.4.0</version>
+        </dependency>
+
     </dependencies>
 
 
