@@ -121,9 +121,7 @@ public class MicroModuleListenerContext implements ApplicationContextAware, Micr
             }
         } else {
             for (MicroModuleListener l : listeners) {
-                if (((GenericMicroModuleListener)l).supportsEventType(e.getClass())) {
-                    l.onEvent(e);
-                }
+                l.onEvent(e);
             }
         }
     }
