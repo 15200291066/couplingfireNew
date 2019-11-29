@@ -1,5 +1,6 @@
 package com.couplingfire.registry;
 
+import com.couplingfire.conf.MicroModuleEnum;
 import com.couplingfire.core.MicroModuleListener;
 import com.couplingfire.manager.MicroModuleListenerContext;
 import org.springframework.beans.BeansException;
@@ -7,6 +8,8 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @Date 2019/11/6 18:57
@@ -30,9 +33,8 @@ public class MicroModuleIOC implements BeanPostProcessor {
     public Object postProcessAfterInitialization(Object o, String s) throws BeansException {
         Class beanClz = o.getClass();
         MicroModuleListener anno = (MicroModuleListener) beanClz.getAnnotation(MicroModuleListener.class);
-        if (anno != null) {
-            //MicroModuleListenerContext.addMicroModuleListenerClass(beanClz);
-            //listenerManager.registMicroModuleListener(beanClz);
+        if (Objects.nonNull(anno)
+                    && Objects.equals(MicroModuleEnum.ListenerGroup.LOCAL_LISTENER, anno.group())) {
             listenerTable.registMicroModuleListener(beanClz);
         }
         return o;

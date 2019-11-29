@@ -1,5 +1,7 @@
 package com.couplingfire.core;
 
+import com.couplingfire.conf.MicroModuleEnum;
+
 import java.lang.annotation.*;
 
 @Documented
@@ -17,4 +19,9 @@ public @interface MicroModuleListener {
      * @return
      */
     String microModuleName() default "";
+
+
+    MicroModuleEnum.ListenerGroup group() default MicroModuleEnum.ListenerGroup.LOCAL_LISTENER;
+
+    String remoteAppName() default "";
 }

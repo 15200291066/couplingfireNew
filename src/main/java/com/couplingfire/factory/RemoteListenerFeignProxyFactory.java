@@ -11,11 +11,11 @@ import org.springframework.beans.factory.FactoryBean;
  * @Date 2019/11/28 21:28
  * @Author lee
  **/
-public class RemoteListenerFeignProxyFactory<T> implements FactoryBean<T> {
+public class RemoteListenerFeignProxyFactory implements FactoryBean<Object> {
 
+    private Class<?> type;
 
-
-    private Feign.Builder getFeignBuilder(){
+    private Feign.Builder getFeignBuilder() {
         Feign.Builder builder = Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
@@ -24,9 +24,22 @@ public class RemoteListenerFeignProxyFactory<T> implements FactoryBean<T> {
         return builder;
     }
 
+    public Class<?> getType() {
+        return type;
+    }
+
+    public void setType(Class<?> type) {
+        this.type = type;
+    }
+
     @Override
-    public T getObject() throws Exception {
-        return null;
+    public Object getObject() throws Exception {
+        return getTarget();
+    }
+
+    protected Object getTarget() {
+        //TODO
+        return new Object();
     }
 
     @Override
