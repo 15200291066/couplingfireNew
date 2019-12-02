@@ -1,6 +1,6 @@
-package com.couplingfire.core;
+package com.couplingfire.annotation;
 
-import com.couplingfire.registry.MicroModuleRegistry;
+import com.couplingfire.core.MicroModuleRegistry;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

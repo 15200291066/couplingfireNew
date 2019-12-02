@@ -8,7 +8,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -38,7 +37,7 @@ public class DefaultMicroModuleListenerTable implements MicroModuleListenerTable
 
     @Override
     public void registMicroModuleListener(Class<? extends MicroModuleListener> microModuleListenerClz) {
-        com.couplingfire.core.MicroModuleListener anno =  microModuleListenerClz.getAnnotation(com.couplingfire.core.MicroModuleListener.class);
+        com.couplingfire.annotation.MicroModuleListener anno =  microModuleListenerClz.getAnnotation(com.couplingfire.annotation.MicroModuleListener.class);
         if (anno != null) {
             String microModule = anno.microModuleName();
             MicroModuleListener listener = applicationContext.getBean(microModuleListenerClz);

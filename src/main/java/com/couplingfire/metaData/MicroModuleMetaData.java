@@ -1,6 +1,6 @@
 package com.couplingfire.metaData;
 
-import com.couplingfire.core.MicroModuleListener;
+import com.couplingfire.annotation.MicroModuleListener;
 
 /**
  * @Date 2019/11/5 18:58

@@ -1,10 +1,5 @@
 package com.couplingfire.factory;
 
-import feign.Feign;
-import feign.Request;
-import feign.Retryer;
-import feign.jackson.JacksonDecoder;
-import feign.jackson.JacksonEncoder;
 import org.springframework.beans.factory.FactoryBean;
 
 /**
@@ -15,14 +10,19 @@ public class RemoteListenerFeignProxyFactory implements FactoryBean<Object> {
 
     private Class<?> type;
 
-    private Feign.Builder getFeignBuilder() {
-        Feign.Builder builder = Feign.builder()
-                .encoder(new JacksonEncoder())
-                .decoder(new JacksonDecoder())
-                .options(new Request.Options(1000, 3500))
-                .retryer(new Retryer.Default(5000, 5000, 3)); //后期优化配置
-        return builder;
+    private String remoteAppName;
+
+    public RemoteListenerFeignProxyFactory(Class<?> type) {
+        this.type = type;
     }
+//    private Feign.Builder getFeignBuilder() {
+//        Feign.Builder builder = Feign.builder()
+//                .encoder(new JacksonEncoder())
+//                .decoder(new JacksonDecoder())
+//                .options(new Request.Options(1000, 3500))
+//                .retryer(new Retryer.Default(5000, 5000, 3)); //后期优化配置
+//        return builder;
+//    }
 
     public Class<?> getType() {
         return type;
@@ -30,6 +30,14 @@ public class RemoteListenerFeignProxyFactory implements FactoryBean<Object> {
 
     public void setType(Class<?> type) {
         this.type = type;
+    }
+
+    public String getRemoteAppName() {
+        return remoteAppName;
+    }
+
+    public void setRemoteAppName(String remoteAppName) {
+        this.remoteAppName = remoteAppName;
     }
 
     @Override

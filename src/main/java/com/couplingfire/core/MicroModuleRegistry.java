@@ -1,12 +1,12 @@
-package com.couplingfire.registry;
+package com.couplingfire.core;
 
 import com.couplingfire.conf.MicroModuleEnum;
-import com.couplingfire.core.EnableCouplingFire;
-import com.couplingfire.core.MicroModule;
-import com.couplingfire.core.MicroModuleListener;
-import com.couplingfire.factory.MicroModuleFactoryBean;
+import com.couplingfire.annotation.EnableCouplingFire;
+import com.couplingfire.annotation.MicroModule;
+import com.couplingfire.annotation.MicroModuleListener;
 import com.couplingfire.factory.RemoteListenerFeignProxyFactory;
 import com.couplingfire.manager.MicroModuleListenerContext;
+import com.couplingfire.registry.ClassPathListenerScanner;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,6 +99,31 @@ public class MicroModuleRegistry implements ImportBeanDefinitionRegistrar, Resou
 
     private void microModuleListenerBeanDefRegist (Set<String> basePackages, BeanDefinitionRegistry bfRegistry) {
         ClassPathListenerScanner microModuleScanner = microModuleListenrScanner(bfRegistry);
+//        for (String basePackage : basePackages) {
+//            Set<BeanDefinition> candidates =microModuleScanner.findCandidateComponents(basePackage);
+//            for (BeanDefinition candidate : candidates) {
+//                if (candidate instanceof AnnotatedBeanDefinition) {
+//                    AnnotatedBeanDefinition abd = (AnnotatedBeanDefinition) candidate;
+//                    AnnotationMetadata annotationMetadata = abd.getMetadata();
+//                    Map<String,Object> attributes =annotationMetadata.getAnnotationAttributes(MicroModuleListener.class.getCanonicalName());
+//                    String className =annotationMetadata.getClassName();
+//
+//                    if (Objects.equals(MicroModuleEnum.ListenerGroup.REMOTE_LISTENER, getListenerGroup(attributes))) {
+//                        Assert.isTrue(annotationMetadata.isInterface(), "remote listener can only be specified on an interface");
+//                    }
+//
+//                    String remoteAppName = getRemoteAppName(attributes, "remoteAppName");
+//                    BeanDefinitionBuilder dfBuilder = BeanDefinitionBuilder.genericBeanDefinition(RemoteListenerFeignProxyFactory.class);
+//                    dfBuilder.addPropertyValue("remoteAppName", remoteAppName);
+//                    dfBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
+//                    dfBuilder.addConstructorArgValue(className);
+//                    BeanDefinitionHolder bfh = new BeanDefinitionHolder(dfBuilder.getBeanDefinition(),className);
+//                    BeanDefinitionReaderUtils.registerBeanDefinition(bfh, bfRegistry);
+//                }
+//            }
+//            log.info(candidates.size() + "Remote MicroModuleListener { " +
+//                    candidates + " } found by package[" + basePackage + "]");
+//        }
         for (String basePackage : basePackages) {
             Set<BeanDefinitionHolder> beanDefinitionHolders = microModuleScanner.doScan(basePackage);
             for (BeanDefinitionHolder beanDefinitionHolder : beanDefinitionHolders) {
@@ -128,7 +153,8 @@ public class MicroModuleRegistry implements ImportBeanDefinitionRegistrar, Resou
             String remoteAppName = getRemoteAppName(attributes, "remoteAppName");
             BeanDefinitionBuilder dfBuilder = BeanDefinitionBuilder.genericBeanDefinition(RemoteListenerFeignProxyFactory.class);
             dfBuilder.addPropertyValue("remoteAppName", remoteAppName);
-            dfBuilder.setAutowireMode(2);
+            dfBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
+            dfBuilder.addConstructorArgValue(className);
             BeanDefinitionHolder bfh = new BeanDefinitionHolder(dfBuilder.getBeanDefinition(),className);
             BeanDefinitionReaderUtils.registerBeanDefinition(bfh, bfRegistry);
         }

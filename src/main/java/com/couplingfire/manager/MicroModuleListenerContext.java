@@ -1,20 +1,13 @@
 package com.couplingfire.manager;
 
-import com.couplingfire.event.MicroModuleEvent;
 import com.couplingfire.factory.MicroModuleProxy;
-import com.couplingfire.listener.GenericMicroModuleListener;
 import com.couplingfire.listener.MicroModuleListener;
 import com.couplingfire.listener.MicroModuleListenersDTO;
 import com.couplingfire.metaData.MicroModuleMetaData;
-import com.couplingfire.publisher.MicroModuleEventPublisher;
-import com.couplingfire.registry.DefaultMicroModuleListenerTable;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.core.ResolvableType;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,7 +41,7 @@ public class MicroModuleListenerContext implements ApplicationContextAware {
     }
 
     public static void addMicroModuleListenerMetaData(Class listenerClz) {
-        if (listenerClz.getAnnotation(com.couplingfire.core.MicroModuleListener.class) != null) {
+        if (listenerClz.getAnnotation(com.couplingfire.annotation.MicroModuleListener.class) != null) {
            // microModuleListenerMetaData.put(listenerClz, )
         }
     }

@@ -1,7 +1,7 @@
 package com.couplingfire.registry;
 
 import com.couplingfire.conf.MicroModuleEnum;
-import com.couplingfire.core.MicroModuleListener;
+import com.couplingfire.annotation.MicroModuleListener;
 import com.couplingfire.manager.MicroModuleListenerContext;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * @Date 2019/11/6 18:57
